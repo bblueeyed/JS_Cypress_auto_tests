@@ -1,0 +1,77 @@
+/*
+Make another test that covers the form at https://teroauralinna.github.io/vue-demo-form/
+for positive and negative testing scenarios.
+*/
+
+/// <reference types="cypress" />
+
+describe('Test Suite for Vue.js', function() {
+
+    this.beforeEach(function() {
+        cy.visit("https://teroauralinna.github.io/vue-demo-form/")
+
+    })
+
+    // the form can be submitted with input for required fields
+    it('Submit the form', function() {
+
+        cy.get('#firstName').should('be.visible').should('be.enabled').type('May')
+        cy.get('#lastName').should('be.visible').should('be.enabled').type('White')
+        cy.get('#email').should('be.visible').should('be.enabled').type('maywhite@gr.lla')
+        cy.get('#type').select('Starter subscription (50 € / month)')
+        cy.get('#terms').check().should('be.checked')
+        cy.get('button[type=submit]').click()
+        //cy.wait(1000)
+        cy.get('div.alert.alert-success > strong').contains('The form is submitted!') //verify that submitted by the success alert on the next page
+    })
+
+
+    // page cannot be submitted without required input
+        //for all fields
+    
+        it('No required input', function() {
+        //cy.visit("https://teroauralinna.github.io/vue-demo-form/")
+        cy.get('button[type=submit]').click()
+
+        cy.get('div.alert.alert-danger').contains('Following fields have an invalid or a missing value:')
+
+    })
+
+        //for particular field
+    
+        it('No required input for name', function() {
+        cy.get('#lastName').should('be.visible').should('be.enabled').type('White')
+        cy.get('#email').should('be.visible').should('be.enabled').type('maywhite@gr.lla')
+        cy.get('#type').select('Starter subscription (50 € / month)')
+        cy.get('#terms').check().should('be.checked')
+        cy.get('button[type=submit]').click()
+
+        cy.get('div.alert.alert-danger').contains('Following fields have an invalid or a missing value:')
+        cy.get('div:nth-child(1) > div').contains('First name is required.')
+    })
+        // #TODO tests for the other required fields, checkbox 
+        
+
+	// test for incorrect email format
+        it('Incorrect email format', function() {
+        cy.get('#firstName').should('be.visible').should('be.enabled').type('May')
+        cy.get('#lastName').should('be.visible').should('be.enabled').type('White')
+        cy.get('#email').should('be.visible').should('be.enabled').type('maywhite@grlla')
+        cy.get('#type').select('Starter subscription (50 € / month)')
+        cy.get('#terms').check().should('be.checked')
+        cy.get('button[type=submit]').click()
+
+        cy.get('div.alert.alert-danger > p > strong').contains('Following fields have an invalid or a missing value:')
+        cy.get('div.alert.alert-danger > ul > li > span').contains('Email')
+
+        
+        
+        })
+
+
+
+
+
+        // #TODO test for valid input validations for fields (i.e., max input length for 'Additional info', alpha-numerical validation for 'name' value, etc)  
+
+})    
