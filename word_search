@@ -1,0 +1,40 @@
+/*
+Make an automation test (use an environment that you’re most familiar with. Such as
+Selenium, Cypress, etc.) that covers MarkJs configurator.
+a. The test should:
+i. Open the MarkJs configurator (https://markjs.io/configurator.html).
+ii. Fill out the form to allow to search for word “lorem” (case insensitive).
+iii. Assert that there is a correct number of marked matches.
+b. Within the same test adjust form so that it will search for case sensitive matches
+only and check for results.
+*/
+
+
+/// <reference types="cypress" />
+
+describe('Test Suite for MarkJs', function() {
+
+it('Search', function() {
+
+    // a. insensitive
+
+    cy.visit("https://markjs.io/configurator.html")
+    cy.get('[value=keyword]').should('be.checked')
+    cy.get('#keyword').should('be.visible').should('be.enabled').clear().type('lorem')
+    cy.get('[value=exactly]').contains('exactly').click({force: true})
+    cy.get('#form-keyword-caseSensitive').should('not.be.checked')
+    cy.get('#form-keyword-diacritics').uncheck().should('not.be.checked')
+    cy.get('div.row > div:nth-child(1) > div > div.panel-body > form:nth-child(2) > button').click()
+
+    cy.get('mark[data-markjs=true]').should('have.length', 6)
+    
+    // b. sensitive (to continue the same test)
+
+    cy.get('#form-keyword-caseSensitive').check().should('be.checked')
+    cy.get('div.row > div:nth-child(1) > div > div.panel-body > form:nth-child(2) > button').click()
+
+    cy.get('mark[data-markjs=true]').should('have.length', 1)
+    
+}) 
+
+})
