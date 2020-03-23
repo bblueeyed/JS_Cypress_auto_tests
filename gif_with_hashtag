@@ -1,0 +1,20 @@
+/*
+Make another test that visits https://giphy.com and searches for “fintech” gifs and then
+asserts that there is a gif with a hashtag “#cute”.
+*/
+
+/// <reference types="cypress" />
+
+describe('Test Suite for Giphy', function() {
+
+    it ('Giphy test', function() {
+        cy.visit("https://giphy.com/")
+        cy.get('[type=text]').should('be.visible').should('be.enabled').type('fintech').type('{enter}')
+        
+        //check that search result with Gifs and not with Stickers
+        cy.get('#react-target > div > div:nth-child(4) > div:nth-child(1) > div._2SJKKTR1aMK3kUasjbiVwE > div._3nBtKjCQJGwV5q-PVpsTsz._3RQeLpXgzHp_6Bo2oOVY3O > h1 > span').contains('GIFs')
+    
+        //there is a gif with a hashtag “#cute”
+        cy.get('a[href="/explore/cute"]').should('be.visible')
+    })
+})
